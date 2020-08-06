@@ -7,7 +7,7 @@ import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import { connect } from "react-redux";
-import * as burgerBuilderActions from "../../store/actions/index";
+import * as actions from "../../store/actions/index";
 
 // global constants are named in all caps.
 
@@ -20,6 +20,7 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     this.props.initIngredientsHandler();
     console.log(this.props.state);
+    this.props.onPurchased();
   }
 
   updatePurchaseable(ingredients) {
@@ -129,12 +130,10 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    addIngredientHandler: (name) =>
-      dispatch(burgerBuilderActions.addIngredient(name)),
-    removeIngredientHandler: (name) =>
-      dispatch(burgerBuilderActions.removeIngredient(name)),
-    initIngredientsHandler: () =>
-      dispatch(burgerBuilderActions.initIngredients()),
+    addIngredientHandler: (name) => dispatch(actions.addIngredient(name)),
+    removeIngredientHandler: (name) => dispatch(actions.removeIngredient(name)),
+    initIngredientsHandler: () => dispatch(actions.initIngredients()),
+    onPurchased: () => dispatch(actions.purchaseInit()),
   };
 };
 
