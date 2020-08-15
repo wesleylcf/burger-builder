@@ -5,6 +5,7 @@ import auth from "./auth.module.css";
 import * as authActions from "../../store/actions/index";
 import { connect } from "react-redux";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import { Redirect } from "react-router-dom";
 
 export class Auth extends Component {
   state = {
@@ -92,6 +93,12 @@ export class Auth extends Component {
     });
   };
 
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.redirectPath !== "/") {
+      this.props.onResetRedirectPath();
+    }
+  }
+
   render() {
     const formElements = [];
     for (let key in this.state.controls) {
@@ -121,6 +128,7 @@ export class Auth extends Component {
 
     return (
       <div className={auth.Auth}>
+        {this.props.isAuth ? <Redirect to={this.props.redirectPath} /> : null}
         {error}
         <form onSubmit={this.submitHandler}>
           {form}
@@ -140,12 +148,16 @@ const mapStateToProps = (state) => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
+    isAuth: state.auth.token !== null,
+    buildingBurger: state.burgerBuilder.building,
+    redirectPath: state.auth.redirectPath,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (email, password, isSigningUp) =>
       dispatch(authActions.auth(email, password, isSigningUp)),
+    onResetRedirectPath: () => dispatch(authActions.setRedirectPath()),
   };
 };
 

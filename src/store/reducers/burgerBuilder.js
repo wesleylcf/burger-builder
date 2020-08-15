@@ -5,6 +5,7 @@ const initialState = {
   ingredients: null,
   totalPrice: 2,
   hasError: false,
+  building: false,
 };
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -22,6 +23,7 @@ const addIng = (state, action) => {
     ingredients: updatedIngredientsAdd,
     totalPrice:
       state.totalPrice + INGREDIENT_PRICES[action.payload.ingredientName],
+    building: true,
   };
   return updateObject(state, updatedStateAdd);
 };
@@ -29,6 +31,7 @@ const remIng = (state, action) => {
   const updatedIngredientsRemove = updateObject(state.ingredients, {
     [action.payload.ingredientName]:
       state.ingredients[action.payload.ingredientName] - 1,
+    building: true,
   });
   const updatedStateRemove = {
     ingredients: updatedIngredientsRemove,
@@ -42,6 +45,7 @@ const setIng = (state, action) => {
     ingredients: action.payload.ingredients,
     error: false,
     totalPrice: 2,
+    building: false,
   });
 };
 const setIngFail = (state, action) => {
@@ -58,8 +62,9 @@ const reducer = (state = initialState, action) => {
       return setIng(state, action);
     case actionTypes.FETCH_INGREDIENTS_FAILED:
       return setIngFail(state, action);
+    default:
+      return state;
   }
-  return state;
 };
 
 export default reducer;

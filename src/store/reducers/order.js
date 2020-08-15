@@ -1,6 +1,5 @@
 import * as actionTypes from "../actions/actionTypes";
 import { updateObject } from "../utility/utility";
-import { purchaseBurgerFail } from "../actions/order";
 
 const initialState = {
   orders: [],
@@ -43,7 +42,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.PURCHASE_INIT:
       return purchaseInit(state, action);
     case actionTypes.PURCHASE_BURGER_FAIL:
-      return purchaseBurgerFail(state, action);
+      return purchaseFail(state, action);
     case actionTypes.PURCHASE_BURGER_SUCCESS:
       return purchasePass(state, action);
     case actionTypes.PURCHASE_BURGER_START:
