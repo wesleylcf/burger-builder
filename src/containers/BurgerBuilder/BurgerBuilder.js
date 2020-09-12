@@ -7,11 +7,11 @@ import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import { connect } from "react-redux";
-import * as burgerBuilderActions from "../../store/actions/index";
+import * as actions from "../../store/actions/index";
 
 // global constants are named in all caps.
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   state = {
     isOrdered: false,
     // isCheckedOut: false,
@@ -19,7 +19,8 @@ class BurgerBuilder extends Component {
   };
   componentDidMount() {
     this.props.initIngredientsHandler();
-    console.log(this.props.state);
+
+    this.props.onPurchased();
   }
 
   updatePurchaseable(ingredients) {
@@ -34,13 +35,17 @@ class BurgerBuilder extends Component {
   }
 
   displayModalHandler = () => {
-    this.setState({
-      isOrdered: true,
-    });
+    if (this.props.isAuth) {
+      this.setState({
+        isOrdered: true,
+      });
+    } else {
+      this.props.onAuthRedirect("/checkout");
+      this.props.history.push("/authentication");
+    }
   };
 
   hideModalHandler = () => {
-    console.log("exit");
     this.setState({
       isOrdered: false,
     });
@@ -70,7 +75,7 @@ class BurgerBuilder extends Component {
     for (let x in { ...this.props.ingredients }) {
       disabledInfo[x] = this.props.ingredients[x] < 1;
     }
-    console.log("[BurgerBuilder] disabledInfo", disabledInfo);
+
     let burger = this.props.hasError ? (
       <p>Unsuccessful attempt to get ingredients</p>
     ) : (
@@ -96,6 +101,7 @@ class BurgerBuilder extends Component {
             price={this.props.totalPrice}
             purchaseable={this.updatePurchaseable(this.props.ingredients)}
             displayModal={this.displayModalHandler}
+            isAuth={this.props.isAuth}
           />
         </Fragment>
       );
@@ -125,16 +131,16 @@ const mapStateToProps = (state) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     hasError: state.burgerBuilder.hasError,
+    isAuth: state.auth.token !== null,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    addIngredientHandler: (name) =>
-      dispatch(burgerBuilderActions.addIngredient(name)),
-    removeIngredientHandler: (name) =>
-      dispatch(burgerBuilderActions.removeIngredient(name)),
-    initIngredientsHandler: () =>
-      dispatch(burgerBuilderActions.initIngredients()),
+    addIngredientHandler: (name) => dispatch(actions.addIngredient(name)),
+    removeIngredientHandler: (name) => dispatch(actions.removeIngredient(name)),
+    initIngredientsHandler: () => dispatch(actions.initIngredients()),
+    onPurchased: () => dispatch(actions.purchaseInit()),
+    onAuthRedirect: (path) => dispatch(actions.setRedirectPath(path)),
   };
 };
 

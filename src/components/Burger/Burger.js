@@ -4,7 +4,6 @@ import burger from "./burger.module.css";
 
 const Burger = (props) => {
   // get Array of ingredient names
-  console.log(props.ingredients);
   let transformedIngredients = Object.keys(props.ingredients)
     .map((igKey) => {
       // get a dummy array with number of dummy values equal to value in props.ingredients
@@ -18,7 +17,6 @@ const Burger = (props) => {
     .reduce((arr, el) => {
       return arr.concat(el);
     }, []);
-  console.log(transformedIngredients);
   if (transformedIngredients.length === 0) {
     transformedIngredients = <p>Please start adding ingredients!</p>;
   }

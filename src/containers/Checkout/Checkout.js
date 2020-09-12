@@ -39,6 +39,7 @@ class Checkout extends Component {
     this.props.history.replace("/checkout/contact-data");
   };
   render() {
+    const purchasedRedirect = this.props.purchased ? <Redirect to="/" /> : null;
     let summary = <Redirect to="/" />;
     if (this.props.ingredients) {
       summary = (
@@ -55,7 +56,12 @@ class Checkout extends Component {
         </Fragment>
       );
     }
-    return <div>{summary}</div>;
+    return (
+      <div>
+        {purchasedRedirect}
+        {summary}
+      </div>
+    );
   }
 }
 
@@ -63,6 +69,7 @@ const mapStateToProps = (state) => {
   return {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
+    purchased: state.order.purchased,
   };
 };
 

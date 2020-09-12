@@ -7,6 +7,8 @@ import Input from "../../components/UI/form/Input/Input";
 import { connect } from "react-redux";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import * as orderActions from "../../store/actions/index";
+import { updateObject, isValid } from "../../shared/utility";
+
 class ContactData extends Component {
   state = {
     submit: false,
@@ -101,38 +103,35 @@ class ContactData extends Component {
       ingredients: this.props.ingredients,
       price: this.props.totalPrice,
       orderData: formData,
+      userId: this.props.userId,
     };
-    this.props.onOrderBurger(order);
-  };
-
-  isValid = (value, rules) => {
-    let isValid = true;
-    if (rules.required) {
-      isValid = value.trim() !== "" && isValid;
-    }
-    if (rules.minChars) {
-      isValid = value.length >= rules.minChars && isValid;
-    }
-    if (rules.isString) {
-      isValid = !/\d/.test(value) && isValid;
-    }
-    if (rules.isNum) {
-      isValid = /^\d+$/.test(value) && isValid;
-    }
-    return isValid;
+    this.props.onOrderBurger(order, this.props.token);
   };
 
   inputHandler = (e, key) => {
+    // const value = e.target.value;
+    // const targetInputCopy = { ...this.state.orderForm[key] };
+    // targetInputCopy.value = value;
+    // targetInputCopy.touched = true;
+    // const formCopy = { ...this.state.orderForm };
+    // targetInputCopy.valid = this.isValid(
+    //   targetInputCopy.value,
+    //   targetInputCopy.validation
+    // );
+    // formCopy[key] = targetInputCopy;
     const value = e.target.value;
-    const targetInputCopy = { ...this.state.orderForm[key] };
-    targetInputCopy.value = value;
-    targetInputCopy.touched = true;
-    const formCopy = { ...this.state.orderForm };
-    targetInputCopy.valid = this.isValid(
-      targetInputCopy.value,
-      targetInputCopy.validation
-    );
-    formCopy[key] = targetInputCopy;
+    const targetInput = updateObject(this.state.orderForm[key], {
+      value: value,
+      touched: true,
+      valid: isValid(
+        this.state.orderForm[key].value,
+        this.state.orderForm[key].validation
+      ),
+    });
+
+    const formCopy = updateObject(this.state.orderForm, {
+      [key]: targetInput,
+    });
     this.setState({
       orderForm: formCopy,
     });
@@ -186,12 +185,14 @@ const mapStateToProps = (state) => {
     ingredients: state.burgerBuilder.ingredients,
     totalPrice: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
+    userId: state.auth.userId,
+    token: state.auth.token,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderBurger: (orderData) =>
-      dispatch(orderActions.purchaseBurger(orderData)),
+    onOrderBurger: (orderData, token) =>
+      dispatch(orderActions.purchaseBurger(orderData, token)),
   };
 };
 
