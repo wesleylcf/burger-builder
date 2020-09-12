@@ -6,6 +6,7 @@ import * as authActions from "../../store/actions/index";
 import { connect } from "react-redux";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import { Redirect } from "react-router-dom";
+import { updateObject, isValid } from "../../shared/utility";
 
 export class Auth extends Component {
   state = {
@@ -41,38 +42,28 @@ export class Auth extends Component {
       },
     },
   };
-  isValid = (value, rules) => {
-    let isValid = true;
-    if (rules.required) {
-      isValid = value.trim() !== "" && isValid;
-    }
-    if (rules.minChars) {
-      isValid = value.length >= rules.minChars && isValid;
-    }
-    if (rules.isString) {
-      isValid = !/\d/.test(value) && isValid;
-    }
-    if (rules.isNum) {
-      isValid = /^\d+$/.test(value) && isValid;
-    }
-    if (rules.isEmail) {
-      isValid =
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value) && isValid;
-    }
-    return isValid;
-  };
 
   inputHandler = (e, key) => {
+    // const value = e.target.value;
+    // const targetInputCopy = { ...this.state.controls[key] };
+    // targetInputCopy.value = value;
+    // targetInputCopy.touched = true;
+    // const formCopy = { ...this.state.controls };
+    // targetInputCopy.valid = this.isValid(
+    //   targetInputCopy.value,
+    //   targetInputCopy.validation
+    // );
+    // formCopy[key] = targetInputCopy;
     const value = e.target.value;
-    const targetInputCopy = { ...this.state.controls[key] };
-    targetInputCopy.value = value;
-    targetInputCopy.touched = true;
-    const formCopy = { ...this.state.controls };
-    targetInputCopy.valid = this.isValid(
-      targetInputCopy.value,
-      targetInputCopy.validation
-    );
-    formCopy[key] = targetInputCopy;
+    const targetInput = updateObject(this.state.controls[key], {
+      value: value,
+      touched: true,
+      valid: isValid(
+        this.state.controls[key].value,
+        this.state.controls[key].validation
+      ),
+    });
+    const formCopy = updateObject(this.state.controls, { [key]: targetInput });
     this.setState({
       controls: formCopy,
     });

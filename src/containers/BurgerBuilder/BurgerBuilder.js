@@ -11,7 +11,7 @@ import * as actions from "../../store/actions/index";
 
 // global constants are named in all caps.
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   state = {
     isOrdered: false,
     // isCheckedOut: false,
@@ -19,7 +19,7 @@ class BurgerBuilder extends Component {
   };
   componentDidMount() {
     this.props.initIngredientsHandler();
-    console.log(this.props.state);
+
     this.props.onPurchased();
   }
 
@@ -46,7 +46,6 @@ class BurgerBuilder extends Component {
   };
 
   hideModalHandler = () => {
-    console.log("exit");
     this.setState({
       isOrdered: false,
     });
@@ -76,7 +75,7 @@ class BurgerBuilder extends Component {
     for (let x in { ...this.props.ingredients }) {
       disabledInfo[x] = this.props.ingredients[x] < 1;
     }
-    console.log("[BurgerBuilder] disabledInfo", disabledInfo);
+
     let burger = this.props.hasError ? (
       <p>Unsuccessful attempt to get ingredients</p>
     ) : (
