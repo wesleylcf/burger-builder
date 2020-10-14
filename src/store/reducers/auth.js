@@ -42,7 +42,7 @@ const reducer = (state = initialState, action) => {
       return authFail(state, action);
     case actionTypes.AUTH_SUCCESS:
       return authSuccess(state, action);
-    case actionTypes.LOGOUT:
+    case actionTypes.AUTH_LOGOUT:
       return authLogout(state, action);
     case actionTypes.SET_REDIRECT_PATH:
       return setRedirectPath(state, action);
