@@ -50,7 +50,7 @@
     "type": "git",
     "url": "git+https://github.com/wesleylcf/burger-builder.git"
   },
-  "author": "",
+  "author": "Wesley Lim",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/wesleylcf/burger-builder/issues"
